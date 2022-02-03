@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+
+# cd /autograder/source
+# source ./config.sh
+
+# Update assignment files
+cd /autograder/source/lfs
+git pull origin master
+
+# Update forge
+cd /autograder/Forge
+git pull
+
+# Clean forge
+cd /autograder/Forge/forge
+bash clean.sh
+
+# Run the actual autograder
+cd /autograder/source
+rm -rf temp
+python3 run_autograder.py /autograder/submission/ /autograder/source/lfs/ /autograder/source/assignment_data.json >/autograder/results/intermediate-results.json
+
+# Find whether due date has past
+BEFORE_LATE_DEADLINE=$(python3 /autograder/source/is_before_late_deadline.py /autograder/submission_metadata.json)
+
+# "$EXAMPLAR" = true &&
+if [[ "$BEFORE_LATE_DEADLINE" = true ]]
+then
+  TRANSLATOR="translate_to_gradescope_checkexspec.py /autograder/source/assignment_data.json"
+else
+  TRANSLATOR=translate_to_gradescope.py
+fi
+
+python3 $TRANSLATOR /autograder/results/intermediate-results.json /autograder/results/results.json
+
+
+# cd /autograder/source/autograder
+# racket run_autograder.rkt
+
+
+
+
+
+
+# # Download latest results->gradescope report converter
+# cd "/autograder/result-processing"
+# git reset HEAD --hard
+# git pull
+
+# # Compile the results
+# cd /autograder/results
+# jq --slurp -c '.' */results.json > raw_results.json
+
+# # Convert results to gradescope's format and location
+# npm i @types/node
+# ts-node "/autograder/result-processing/gradescope_report.ts" raw_results.json results.json /autograder/source/instructor/points.json
+
+
