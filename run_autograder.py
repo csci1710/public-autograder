@@ -25,9 +25,9 @@ def forge_to_grading_hack(from_file, to_file):
 
 def run_pair(code_file, test_file, provided):
     #shutil.copyfile(code_file, "temp/code.rkt")
-    forge_to_grading(test_file, "temp/test.rkt", "code.rkt", provided)
-    forge_to_grading_hack(code_file, "temp/code.rkt")
-    os.system("racket temp/test.rkt > temp/result")
+    forge_to_grading(test_file, "temp/test.frg", "code.frg", provided)
+    forge_to_grading_hack(code_file, "temp/code.frg")
+    os.system("racket temp/test.frg > temp/result")
 
     with open("temp/result", "r") as f:
         result = list(filter(lambda line: line != "", f.read().split("\n")))[-1]
