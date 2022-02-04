@@ -13,6 +13,9 @@ ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
 
 # Initialize git repo with assignment files
 git clone git@github.com:tnelson/lfs.git
+cd lfs
+git checkout autograding
+cd ..
 
 chmod +x run_autograder
 mv run_autograder /autograder/run_autograder
